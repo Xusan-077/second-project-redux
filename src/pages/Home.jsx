@@ -1,0 +1,12 @@
+export default function Home() {
+
+    return (
+        <section className="">
+            <div className="container">
+                <div className="bg-blue-300 p-[100px_0] text-center text-[60px] font-semibold text-white rounded-lg">
+                    <h2 className="">Home</h2>
+                </div>
+            </div>
+        </section>
+    )
+}
