@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const userSlice = createSlice({
   name: "user action",
   initialState: {
-    isAuth: false,
+    isAuth: localStorage.getItem("isAuth"),
     userAction: JSON.parse(localStorage.getItem("userAction" || null)),
   },
   reducers: {
@@ -12,6 +12,7 @@ export const userSlice = createSlice({
       state.userAction = actions.payload.userAction;
 
       localStorage.setItem("userAction", JSON.stringify(state.userAction));
+      localStorage.setItem("isAuth", state.isAuth);
     },
     changePassword: (state, action) => {
       state.userAction = {
@@ -26,6 +27,7 @@ export const userSlice = createSlice({
       state.isAuth = false;
 
       localStorage.removeItem("userAction");
+      localStorage.removeItem("isAuth");
     },
   },
 });
