@@ -62,7 +62,7 @@ export default function ToDo() {
             ""
           )}
 
-          <ul className="border border-gray-500 p-[20px] rounded-lg">
+          <ul className="border border-gray-500 p-5 rounded-lg">
             {todos.length ? (
               todos.map((todo) => (
                 <ToDoItem todo={todo} key={todo.id} {...todo} />

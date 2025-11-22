@@ -89,7 +89,7 @@ export default function PrivateToDo() {
                 <PrivateToDoItem todo={todo} key={todo.id} {...todo} />
               ))
             ) : (
-              <p className="text-red-500 text-center text-2xl font-semibold mb-[20px]">
+              <p className="text-red-500 text-center text-2xl font-semibold mb-5">
                 ToDo List bo'sh
               </p>
             )}

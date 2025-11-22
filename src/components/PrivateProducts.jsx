@@ -163,7 +163,7 @@ export default function PrivateProducts() {
                 />
               ))
             ) : (
-              <p className="text-red-500 text-center text-2xl font-semibold mb-[20px]">
+              <p className="text-red-500 text-center text-2xl font-semibold mb-5">
                 Product bo`sh
               </p>
             )}

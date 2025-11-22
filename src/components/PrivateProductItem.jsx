@@ -114,7 +114,7 @@ export default function PrivateProductItem({
               />
 
               {/* IMAGE UPLOAD */}
-              <div className="mt-3 flex items-center gap-[20px]">
+              <div className="mt-3 flex items-center gap-5">
                 <label
                   htmlFor="imageUpload"
                   className="cursor-pointer bg-blue-500 text-white px-4 py-2 w-full text-center rounded-lg shadow hover:bg-blue-600 transition"
@@ -132,10 +132,7 @@ export default function PrivateProductItem({
 
                 {/* PREVIEW */}
                 {image && (
-                  <img
-                    src={image}
-                    className="w-20 h-20 mt-3 object-cover"
-                  />
+                  <img src={image} className="w-20 h-20 mt-3 object-cover" />
                 )}
               </div>
 
