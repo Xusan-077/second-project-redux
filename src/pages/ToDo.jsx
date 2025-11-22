@@ -34,34 +34,7 @@ export default function ToDo() {
   return (
     <section>
       <div className="container">
-        <div
-          className={`${!isAuth ? "" : "grid-cols-[3fr_5fr] gap-[30px] grid"}`}
-        >
-          {isAuth ? (
-            <div className="">
-              <h2 className="text-[30px] text-gray-600 text-center mb-5 font-semibold">
-                ToDo List
-              </h2>
-
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col w-full border-gray-500 border p-[25px_20px] rounded-lg"
-              >
-                <input
-                  onChange={(evt) => setTitle(evt.target.value)}
-                  className="border-b p-[0_0_0_10px] outline-none border-b-gray-400 mb-2.5 pb-[5px]"
-                  type="text"
-                  placeholder="Enter ToDo"
-                />
-                <button className="bg-blue-400 p-[5px_0] text-[14px] w-full text-white rounded-lg">
-                  Submit
-                </button>
-              </form>
-            </div>
-          ) : (
-            ""
-          )}
-
+        <div className="">
           <ul className="border border-gray-500 p-5 rounded-lg">
             {todos.length ? (
               todos.map((todo) => (

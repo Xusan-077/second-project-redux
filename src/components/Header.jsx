@@ -1,14 +1,6 @@
-import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
-import { login, logout } from "../store/userSlice";
 
 export default function Header() {
-  const dispatch = useDispatch();
-  const { user, isAuth } = useSelector((state) => state.user);
-
-  console.log("user", user);
-  console.log("isAuth", isAuth);
-
   return (
     <header className="">
       <div className="container">
@@ -44,21 +36,12 @@ export default function Header() {
             </li>
           </ul>
 
-          {!isAuth ? (
-            <Link
-              to="/login"
-              className="text-center cursor-pointer p-[5px_0] max-w-[100px] w-full border text-[18px] font-semibold border-blue-500 rounded-lg text-blue-500"
-            >
-              Log in
-            </Link>
-          ) : (
-            <button
-              onClick={() => dispatch(logout())}
-              className="cursor-pointer p-[5px_0] max-w-[100px] w-full border text-[18px] font-semibold border-blue-500 rounded-lg text-blue-500"
-            >
-              Log out
-            </button>
-          )}
+          <Link
+            to="/login"
+            className="text-center cursor-pointer p-[5px_0] max-w-[100px] w-full border text-[18px] font-semibold border-blue-500 rounded-lg text-blue-500"
+          >
+            Log in
+          </Link>
         </div>
       </div>
     </header>
