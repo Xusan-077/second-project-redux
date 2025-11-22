@@ -3,11 +3,11 @@ import { login } from "../store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import DatePicker from "react-datepicker";
 
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const { isAuth } = useSelector((state) => state.user);
 
   const [form, setForm] = useState({
@@ -16,13 +16,14 @@ export default function Login() {
     age: "",
     email: "",
     password: "",
+    gender: "",
   });
 
   const [errors, setErrors] = useState({});
+  const [birthdate, setBirthdate] = useState(null);
 
   function handleLogin(e) {
     e.preventDefault();
-
     const newErrors = {};
 
     if (!form.firstname.trim()) newErrors.firstname = "Firstname required!";
@@ -43,8 +44,7 @@ export default function Login() {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      toast.success("tizimga login qilindi");
-
+      toast.success("Tizimga login qilindi");
       setTimeout(() => {
         dispatch(
           login({
@@ -60,14 +60,11 @@ export default function Login() {
   }
 
   useEffect(() => {
-    if (isAuth) {
-      navigate("/profile");
-    }
+    if (isAuth) navigate("/profile");
   }, [isAuth, navigate]);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
-
     setErrors({ ...errors, [e.target.name]: "" });
   }
 
@@ -98,7 +95,7 @@ export default function Login() {
         </h3>
 
         <form onSubmit={handleLogin} className="w-[500px] mb-[30px]">
-          {/* firstname */}
+          {/* Firstname */}
           <label className="block text-[20px] mb-[5px] pl-2.5 text-gray-500">
             firstname
           </label>
@@ -113,7 +110,7 @@ export default function Login() {
             <p className="text-red-500 text-sm ml-2">{errors.firstname}</p>
           )}
 
-          {/* lastname */}
+          {/* Lastname */}
           <label className="block text-[20px] mb-[5px] pl-2.5 text-gray-500">
             lastname
           </label>
@@ -128,7 +125,7 @@ export default function Login() {
             <p className="text-red-500 text-sm ml-2">{errors.lastname}</p>
           )}
 
-          {/* age */}
+          {/* Age */}
           <label className="block text-[20px] mb-[5px] pl-2.5 text-gray-500">
             age
           </label>
@@ -143,7 +140,7 @@ export default function Login() {
             <p className="text-red-500 text-sm ml-2">{errors.age}</p>
           )}
 
-          {/* email */}
+          {/* Email */}
           <label className="block text-[20px] mb-[5px] pl-2.5 text-gray-500">
             email
           </label>
@@ -158,7 +155,7 @@ export default function Login() {
             <p className="text-red-500 text-sm ml-2">{errors.email}</p>
           )}
 
-          {/* password */}
+          {/* Password */}
           <label className="block text-[20px] mb-[5px] pl-2.5 text-gray-500">
             password
           </label>
@@ -172,6 +169,25 @@ export default function Login() {
           {errors.password && (
             <p className="text-red-500 text-sm ml-2">{errors.password}</p>
           )}
+
+          {/* Gender */}
+
+          {/* Birthdate */}
+          <div className="flex-1">
+            <label className="block text-[20px] mb-[5px] pl-2.5 text-gray-500">
+              Tug'ilgan sana
+            </label>
+            <DatePicker
+              selected={birthdate}
+              onChange={(date) => setBirthdate(date)}
+              dateFormat="yyyy-MM-dd"
+              placeholderText="Tug'ilgan sana"
+              className="border p-3 rounded-lg mb-3 w-full border-gray-300"
+            />
+            {errors.birthdate && (
+              <p className="text-red-500 text-sm ml-2">{errors.birthdate}</p>
+            )}
+          </div>
 
           <button
             type="submit"

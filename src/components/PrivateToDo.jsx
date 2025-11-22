@@ -8,6 +8,8 @@ export default function PrivateToDo() {
   const { todos } = useSelector((state) => state.todos);
   const { isAuth } = useSelector((state) => state.user);
 
+  const [modal, setModal] = useState(false);
+
   console.log("todos", todos);
 
   const [title, setTitle] = useState("");
@@ -27,43 +29,68 @@ export default function PrivateToDo() {
 
     evt.target.reset();
     setTitle("");
+    setModal(false);
   }
 
   return (
     <section>
       <div className="container">
-        <div
-          className={`${!isAuth ? "" : "grid-cols-[3fr_5fr] gap-[30px] grid"}`}
-        >
-          <div className="">
-            <h2 className="text-[30px] text-gray-600 text-center mb-5 font-semibold">
-              ToDo List
-            </h2>
+        <div className="">
+          {modal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <div className="bg-white w-full max-w-md rounded-lg p-6 relative shadow-lg">
+                {/* Close button */}
+                <button
+                  onClick={() => setModal(false)}
+                  className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-lg font-bold"
+                >
+                  &times;
+                </button>
 
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col w-full border-gray-500 border p-[25px_20px] rounded-lg"
+                {/* Modal title */}
+                <h2 className="text-2xl md:text-3xl text-gray-700 text-center mb-5 font-semibold">
+                  Add ToDo
+                </h2>
+
+                {/* Form */}
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex flex-col w-full gap-4"
+                >
+                  <input
+                    onChange={(evt) => setTitle(evt.target.value)}
+                    className="border-b border-gray-300 p-2 outline-none focus:border-blue-400 transition"
+                    type="text"
+                    placeholder="Enter ToDo"
+                  />
+
+                  <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm transition">
+                    Submit
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-between items-center mb-[15px]">
+            <h3 className="text-[26px] font-semibold">ToDos</h3>
+
+            <button
+              onClick={() => setModal(true)}
+              className="p-[10px_20px] bg-green-500 cursor-pointer text-white rounded-lg"
             >
-              <input
-                onChange={(evt) => setTitle(evt.target.value)}
-                className="border-b p-[0_0_0_10px] outline-none border-b-gray-400 mb-2.5 pb-[5px]"
-                type="text"
-                placeholder="Enter ToDo"
-              />
-              <button className="bg-blue-400 p-[5px_0] text-[14px] w-full text-white rounded-lg">
-                Submit
-              </button>
-            </form>
+              + Add ToDo
+            </button>
           </div>
 
-          <ul className="mt-[65px] border border-gray-500 p-[30px_20px_10px_30px] rounded-lg">
+          <ul className="border border-gray-500 p-[30px_20px_10px_30px] rounded-lg">
             {todos.length ? (
               todos.map((todo) => (
                 <PrivateToDoItem todo={todo} key={todo.id} {...todo} />
               ))
             ) : (
-              <p className="text-red-400 text-center text-[25px]">
-                ToDo List bo`sh
+              <p className="text-red-500 text-center text-2xl font-semibold mb-[20px]">
+                ToDo List bo'sh
               </p>
             )}
           </ul>

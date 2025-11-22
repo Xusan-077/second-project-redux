@@ -35,21 +35,21 @@ export default function LeftComponenta() {
               </button>
             </div>
 
-            <h2 className="text-[26px] font-semibold mb-4 text-gray-700 text-center">
+            <h2 className="text-[22px] font-semibold mb-4 text-gray-700 text-center">
               Are you sure you want to log out?
             </h2>
 
             <div className="flex justify-end">
-              <div className="flex justify-end w-[200px]  gap-4 mt-6">
+              <div className="flex justify-end w-[200px] gap-4">
                 <button
                   onClick={() => setLogout(false)}
-                  className="flex-1 bg-gray-300 text-gray-700 p-3 cursor-pointer rounded-lg hover:bg-gray-400 transition"
+                  className="flex-1 bg-gray-300 text-gray-700 p-2 cursor-pointer rounded-lg hover:bg-gray-400 transition"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handlelogout}
-                  className="flex-1 bg-red-500 text-white cursor-pointer p-3 rounded-lg hover:bg-red-600 transition"
+                  className="flex-1 bg-red-500 text-white cursor-pointer p-2 rounded-lg hover:bg-red-600 transition"
                 >
                   Log Out
                 </button>

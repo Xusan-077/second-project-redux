@@ -25,6 +25,7 @@ export const productSlice = createSlice({
               name: action.payload.edit.name,
               price: action.payload.edit.price,
               count: action.payload.edit.count,
+              img: action.payload.edit.img,
             }
           : product
       );
