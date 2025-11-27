@@ -1,20 +1,28 @@
 import { useSelector } from "react-redux";
 import ProductItem from "../components/productItem";
+import { useQuery } from "@tanstack/react-query";
+import { API } from "../../API";
 
 export default function Products() {
   const { products } = useSelector((state) => state.products);
+
+  const { data } = useQuery({
+    queryKey: ["products"],
+    queryFn: async function getAPI() {
+      const res = await API.get("/faqs");
+      return res.data.data;
+    },
+  });
+
+  console.log(data);
 
   return (
     <section>
       <div className="container">
         <div className="">
-          <ul
-            className={`${
-              products.length ? "mt-[65px] grid grid-cols-3 gap-5" : ""
-            }`}
-          >
-            {products.length ? (
-              products.map((product, index) => (
+          <ul className={`${data?.length ? "mt-[65px] grid grid-cols-3 gap-5" : ""}`}>
+            {data?.length ? (
+              data.map((product, index) => (
                 <ProductItem
                   productId={index + 1}
                   product={product}

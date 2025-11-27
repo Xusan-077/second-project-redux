@@ -1,54 +1,26 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
-import { addProduct } from "../store/productSlice";
+import { useEffect, useState } from "react";
 import PrivateProductItem from "./PrivateProductItem";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { API } from "../../API";
 import { toast } from "react-toastify";
 
 export default function PrivateProducts() {
-  const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.products);
-  const { isAuth } = useSelector((state) => state.user);
-
   const [modal, setModal] = useState(false);
-  const [image, setImage] = useState(null);
 
   const [data, setData] = useState({
-    name: "",
-    count: "",
-    price: "",
+    question: "",
+    answer: "",
   });
 
   function openModal() {
     setModal(true);
 
-    // Forma tozalash
-    setData({ name: "", price: "", count: "" });
-    setImage(null);
+    setData({ savol: "", javob: "" });
   }
 
   function closeModal() {
     setModal(false);
-    setData({ name: "", price: "", count: "" });
-    setImage(null);
-  }
-
-  function handleSubmit(evt) {
-    evt.preventDefault();
-
-    if (data.name !== "" && data.price !== "" && data.count !== "") {
-      const newProduct = {
-        id: Date.now(),
-        ...data,
-        img: image ? image : null,
-      };
-
-      dispatch(addProduct(newProduct));
-
-      toast.success("Product muvaffaqiyatli qo‘shildi");
-
-      closeModal();
-      evt.target.reset();
-    }
+    setData({ question: "", answer: "" });
   }
 
   function saveData(e) {
@@ -58,11 +30,31 @@ export default function PrivateProducts() {
     });
   }
 
-  const handleImageChange = (e) => {
-    if (e.target.files[0]) {
-      setImage(URL.createObjectURL(e.target.files[0]));
+  function handleSubmit(evt) {
+    evt.preventDefault();
+
+    if (data.question.trim() != "" && data.answer.trim() != "") {
+      mutation.mutate(data);
     }
-  };
+  }
+
+  const mutation = useMutation({
+    onSuccess: () => {
+      setModal(false);
+      toast.success("Add FAQ success");
+    },
+    mutationFn: async (faq) => {
+      const res = await API.post("/faqs", faq);
+    },
+  });
+
+  const { data: datas } = useQuery({
+    queryKey: ["products"],
+    queryFn: async function getAPI() {
+      const res = await API.get("/faqs");
+      return res.data.data;
+    },
+  });
 
   return (
     <section>
@@ -87,55 +79,22 @@ export default function PrivateProducts() {
                     onChange={saveData}
                     className="border-b p-[10px_0_10px_20px] outline-none border-b-gray-400 mb-2.5"
                     type="text"
-                    placeholder="Enter name"
-                    name="name"
+                    placeholder="Savolni kiriting"
+                    name="question"
                     value={data.name}
                   />
 
                   <input
                     onChange={saveData}
                     className="border-b p-[10px_0_10px_20px] outline-none border-b-gray-400 mb-2.5"
-                    type="number"
-                    placeholder="Enter price"
-                    name="price"
+                    type="text"
+                    placeholder="Javobni kiriting"
+                    name="answer"
                     value={data.price}
                   />
 
-                  <input
-                    onChange={saveData}
-                    className="border-b p-[10px_0_10px_20px] outline-none border-b-gray-400 mb-2.5"
-                    type="number"
-                    placeholder="Enter count"
-                    name="count"
-                    value={data.count}
-                  />
-
-                  <div>
-                    <label
-                      htmlFor="imageUpload"
-                      className="cursor-pointer bg-blue-500 text-white px-4 py-2 w-full text-center rounded-lg shadow hover:bg-blue-600 transition"
-                    >
-                      Upload Image
-                    </label>
-
-                    <input
-                      id="imageUpload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                    />
-
-                    {image && (
-                      <img
-                        src={image}
-                        className="w-20 h-20 mt-3 object-cover rounded-full border"
-                      />
-                    )}
-                  </div>
-
                   <button className="bg-blue-500 p-[10px_0] text-[14px] w-full text-white rounded-lg mt-4">
-                    Submit
+                    {mutation.isSuccess ? "Loading..." : "Submit"}
                   </button>
                 </form>
               </div>
@@ -154,8 +113,8 @@ export default function PrivateProducts() {
           </div>
 
           <ul className="border border-gray-500 p-[30px_20px_10px_30px] rounded-lg">
-            {products.length ? (
-              products.map((product, index) => (
+            {datas?.length ? (
+              datas?.map((product, index) => (
                 <PrivateProductItem
                   productId={index + 1}
                   product={product}

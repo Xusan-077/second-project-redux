@@ -1,36 +1,39 @@
+import { format } from "date-fns";
+
 export default function PrivateProductItem({
   product,
-  img,
-  price,
-  name,
-  count,
+  productId,
+  question,
+  answer,
+  createdAt,
+  updatedAt,
 }) {
   console.log(product);
 
   return (
-    <li className="bg-white rounded-lg p-4 w-full">
-      <div className="bg-gray-200 w-full h-[200px] rounded-lg mb-[22px] flex items-center justify-center">
-        {img ? (
-          <img src={img} alt={name} className="w-full h-full object-cover" />
-        ) : (
-          <span className="text-gray-400 text-sm">No Image</span>
-        )}
+    <li className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-4 w-full">
+      {/* Image box */}
+      <div className="bg-gray-100 w-full h-[200px] rounded-lg mb-5 flex items-center justify-center overflow-hidden">
+        <span className="text-gray-400 text-sm italic">No Image</span>
       </div>
 
-      <div className="p-1.5">
-        <h2 className="text-lg text-[18x] font-semibold line-clamp-1">
-          {name}
+      <div className="space-y-2">
+        <h2 className="text-lg font-semibold text-gray-800 line-clamp-1">
+          Savol:
+          <span className="font-normal text-gray-700">{question}</span>
+        </h2>
+        <h2 className="text-lg font-semibold text-gray-800 line-clamp-2">
+          Javob: <span className="font-normal text-gray-700">{answer}</span>
         </h2>
 
-        <p className="text-gray-500 text-[14px] mb-[25px] line-clamp-3">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium
-          unde debitis laboriosam perferendis ab provident facere inventore
-          labore, dolorem eligendi?
-        </p>
-
-        <div className="flex justify-between w-full text-gray-700 font-medium">
-          <span>Price: ${price}</span>
-          <span>Count: {count}</span>
+        <div className="flex flex-col gap-3 text-sm text-gray-500 mt-3">
+          <span>
+            Yaratilgan: {format(new Date(createdAt), "dd yyyy, HH:mm:ss")}
+          </span>
+          <span>
+            Yangilangan: {format(new Date(updatedAt), "dd yyyy, HH:mm:ss")}
+            {}
+          </span>
         </div>
       </div>
     </li>

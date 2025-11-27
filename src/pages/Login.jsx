@@ -60,7 +60,10 @@ export default function Login() {
   }
 
   useEffect(() => {
-    if (isAuth) navigate("/profile");
+    if (isAuth)
+      navigate("/profile", {
+        replace: true,
+      });
   }, [isAuth, navigate]);
 
   function handleChange(e) {

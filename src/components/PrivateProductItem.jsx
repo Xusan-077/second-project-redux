@@ -1,23 +1,13 @@
-import { useDispatch } from "react-redux";
 import { useState } from "react";
-import { addProduct, deleteProduct, editProduct } from "../store/productSlice";
+import { useMutation } from "@tanstack/react-query";
+import { API } from "../../API";
+import { toast } from "react-toastify";
+import { format } from "date-fns";
 
-export default function PrivateProductItem({
-  product,
-  productId,
-  name,
-  checked,
-}) {
-  const dispatch = useDispatch();
-
-  const [image, setImage] = useState(null);
-  const [editId, setEditId] = useState(null);
-
+export default function PrivateProductItem({ product, productId }) {
   const [editValue, setEditValue] = useState({
-    name: "",
-    price: 0,
-    count: 0,
-    img: null,
+    question: "",
+    answer: "",
   });
 
   const [editModal, setEditModal] = useState(false);
@@ -32,45 +22,42 @@ export default function PrivateProductItem({
   function handleSubmit(evt) {
     evt.preventDefault();
 
-    if (editValue.name && editValue.price && editValue.count) {
-      dispatch(editProduct({ id: editId, edit: editValue }));
+    if (editValue.question.trim() != "" && editValue.answer.trim() != "") {
+      mutationEdit.mutate({ id: product.id, newFaq: editValue });
+    }
+
+    console.log("handlesubmit");
+  }
+
+  const mutationEdit = useMutation({
+    mutationFn: async ({ id, newFaq }) => {
+      const res = await API.put(`/faqs/${id}`, newFaq);
+      console.log(res);
+    },
+
+    onSuccess: () => {
       setEditModal(false);
+      toast.success("Edit FAQ success");
+    },
+  });
 
-      setEditValue({ name: "", price: 0, count: 0, img: null });
-      setImage(null);
-    }
-  }
+  const mutation = useMutation({
+    mutationFn: async (id) => {
+      const res = await API.delete(`/faqs/${id}`);
+      console.log(res);
+    },
 
-  function handleEdit() {
-    setEditModal(true);
-    setEditId(product.id);
+    onSuccess: () => {
+      toast.success("delete FAQ success");
+    },
+  });
 
-    setImage(product.img);
-
-    setEditValue({
-      name: product.name,
-      price: product.price,
-      count: product.count,
-      img: product.img,
-    });
-  }
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imgUrl = URL.createObjectURL(file);
-      setImage(imgUrl);
-
-      setEditValue((prev) => ({
-        ...prev,
-        img: imgUrl,
-      }));
-    }
-  };
+  const isoString = "2025-11-27T08:08:10.081Z";
+  const formatted = format(new Date(isoString), "dd yyyy, HH:mm:ss");
+  console.log(formatted);
 
   return (
-    <li className="grid gap-5 items-center grid-cols-[50px_1fr_100px] mb-2.5 border-b pb-2.5 border-b-[#ccc]">
-      {/* MODAL */}
+    <>
       {editModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-white w-[400px] rounded-lg p-6 relative">
@@ -82,7 +69,7 @@ export default function PrivateProductItem({
             </button>
 
             <h2 className="text-[30px] text-gray-600 text-left mb-5 font-semibold">
-              Edit Product
+              Edit FAQ
             </h2>
 
             <form onSubmit={handleSubmit} className="flex flex-col w-full">
@@ -90,93 +77,66 @@ export default function PrivateProductItem({
                 onChange={saveData}
                 className="border-b p-[10px_0_10px_20px] outline-none border-b-gray-400 mb-2.5"
                 type="text"
-                name="name"
-                placeholder="Enter name"
-                defaultValue={product.name}
+                placeholder="Savolni kiriting"
+                name="question"
+                defaultValue={product.question}
               />
 
               <input
                 onChange={saveData}
                 className="border-b p-[10px_0_10px_20px] outline-none border-b-gray-400 mb-2.5"
-                type="number"
-                name="price"
-                placeholder="Enter price"
-                defaultValue={product.price}
+                type="text"
+                placeholder="Javobni kiriting"
+                name="answer"
+                defaultValue={product.answer}
               />
 
-              <input
-                onChange={saveData}
-                className="border-b p-[10px_0_10px_20px] outline-none border-b-gray-400 mb-2.5"
-                type="number"
-                name="count"
-                placeholder="Enter count"
-                defaultValue={product.count}
-              />
-
-              {/* IMAGE UPLOAD */}
-              <div className="mt-3 flex items-center gap-5">
-                <label
-                  htmlFor="imageUpload"
-                  className="cursor-pointer bg-blue-500 text-white px-4 py-2 w-full text-center rounded-lg shadow hover:bg-blue-600 transition"
+              <div className="flex gap-2 justify-end mt-3">
+                <button
+                  onClick={() => setEditModal(false)}
+                  className="bg-gray-500 cursor-pointer  w-[100px] p-[10px_0] text-[16px]  text-white rounded-lg"
                 >
-                  Upload Image
-                </label>
-
-                <input
-                  id="imageUpload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
-                />
-
-                {/* PREVIEW */}
-                {image && (
-                  <img src={image} className="w-20 h-20 mt-3 object-cover" />
-                )}
+                  cancle
+                </button>
+                <button className="bg-blue-500  cursor-pointer w-[100px] p-[10px_0] text-[16px]  text-white rounded-lg">
+                  Edit
+                </button>
               </div>
-
-              <button className="bg-blue-500 p-[10px_0] text-[14px] w-full text-white rounded-lg mt-4">
-                Submit
-              </button>
             </form>
           </div>
         </div>
       )}
 
-      <span>{productId}</span>
+      <li className="grid gap-5 items-center grid-cols-[50px_1fr_100px] mb-2.5 border-b pb-2.5 border-b-[#ccc]">
+        <span>{productId}</span>
 
-      {/* PRODUCT INFO */}
-      <div className="grid grid-cols-4 items-center">
-        <div className="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center bg-gray-100 border border-gray-300 shadow-sm">
-          {product.img ? (
-            <img src={product.img} className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-gray-500 text-xs font-medium">No image</span>
-          )}
+        <div className="grid grid-cols-4 items-center">
+          <h2 className="text-gray-500 text-center">{product.question}</h2>
+          <h2 className="text-gray-500 text-center">{product.answer}</h2>
+          <h2 className="text-gray-500 text-center">
+            {format(new Date(product.createdAt), "dd yyyy, HH:mm:ss")}
+          </h2>
+          <h2 className="text-gray-500 text-center">
+            {format(new Date(product.updatedAt), "dd yyyy, HH:mm:ss")}
+          </h2>
         </div>
 
-        <h2 className="text-gray-500 text-center">{product.name}</h2>
-        <h2 className="text-gray-500 text-center">{product.price}</h2>
-        <h2 className="text-gray-500 text-center">{product.count}</h2>
-      </div>
+        <div className="flex gap-2.5">
+          <button
+            onClick={() => setEditModal(true)}
+            className="w-full cursor-pointer bg-yellow-500 text-[14px] text-white p-[5px_0] rounded-lg"
+          >
+            <i className="bi bi-pencil"></i>
+          </button>
 
-      {/* BUTTONS */}
-      <div className="flex gap-2.5">
-        <button
-          onClick={handleEdit}
-          className="w-full bg-yellow-500 text-[14px] text-white p-[5px_0] rounded-lg"
-        >
-          <i className="bi bi-pencil"></i>
-        </button>
-
-        <button
-          onClick={() => dispatch(deleteProduct(product.id))}
-          className="w-full bg-red-500 text-[14px] text-white p-[5px_0] rounded-lg"
-        >
-          <i className="bi bi-trash3"></i>
-        </button>
-      </div>
-    </li>
+          <button
+            onClick={() => mutation.mutate(product.id)}
+            className="w-full bg-red-500 cursor-pointer text-[14px] text-white p-[5px_0] rounded-lg"
+          >
+            <i className="bi bi-trash3"></i>
+          </button>
+        </div>
+      </li>
+    </>
   );
 }
